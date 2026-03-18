@@ -11,9 +11,10 @@ const { Pool } = pg;
 
 // Initialize PostgreSQL connection pool
 // For Railway, you'll need a DATABASE_URL environment variable
+const isInternal = process.env.DATABASE_URL && process.env.DATABASE_URL.includes('.internal');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.NODE_ENV === 'production' && !isInternal ? { rejectUnauthorized: false } : false,
 });
 
 let isDbConnected = false;
