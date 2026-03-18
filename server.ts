@@ -20,14 +20,6 @@ let isDbConnected = false;
 
 async function initDB() {
   try {
-    // Check if URL is internal (Railway specific issue)
-    if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('.internal')) {
-      console.error('ERROR: You are using an internal Railway database URL (postgres.railway.internal).');
-      console.error('Please use the PUBLIC connection string from Railway instead.');
-      isDbConnected = false;
-      return;
-    }
-
     // Create tables if they don't exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS orders (
