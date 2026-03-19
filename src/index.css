@@ -15,7 +15,7 @@
     overscroll-behavior-x: none;
     touch-action: pan-y;
   }
-  
+
   body,
   #root {
     width: 100%;

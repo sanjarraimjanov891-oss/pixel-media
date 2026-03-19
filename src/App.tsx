@@ -301,32 +301,18 @@ const OrderHistogram = () => {
 };
 
 const VideoPlayer = () => {
-  const videos = [
-    "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
-  ];
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-
-  const handleVideoEnd = () => {
-    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
-  };
-
-  const handleVideoError = () => {
-    console.error("Video failed to load");
-    handleVideoEnd();
-  };
+  const videoUrl =
+    "https://v1.pinimg.com/videos/mc/expMp4/d7/c0/ea/d7c0eaff69cc104f6357b94002f7015a_t1.mp4";
 
   return (
     <div className="rotating-border-content w-full h-full relative overflow-hidden bg-slate-900">
       <video
-        key={currentVideoIndex}
         className="w-full h-full object-cover opacity-80"
         autoPlay
+        loop
         muted
         playsInline
-        onEnded={handleVideoEnd}
-        onError={handleVideoError}
-        src={videos[currentVideoIndex]}
+        src={videoUrl}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
     </div>
@@ -1979,7 +1965,6 @@ const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) 
 };
 
 const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrders, onDeleteOrder, onDeleteSchoolOrder, onDeleteAdsOrder, onDeleteDesignOrder }: { onNavigate: (page: Page) => void, orders: Order[], schoolOrders: SchoolOrder[], adsOrders: AdsOrder[], designOrders: DesignOrder[], onDeleteOrder: (id: number) => void, onDeleteSchoolOrder: (id: number) => void, onDeleteAdsOrder: (id: number) => void, onDeleteDesignOrder: (id: number) => void, key?: string }) => {
-
   // Normalize statuses to match standard CRM statuses
   const normalizeStatus = (status: string) => {
     const s = status.toLowerCase();
@@ -2052,7 +2037,8 @@ const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrd
     if (!da) return 1;
     if (!db) return -1;
     return db.getTime() - da.getTime(); // Newest first
-  });
+  });
+
   const totalOrders = combinedOrders.length;
   const activeOrders = combinedOrders.filter(o => o.normalizedStatus !== 'Даяр' && o.normalizedStatus !== 'Жокко чыккан').length;
   const readyOrders = combinedOrders.filter(o => o.normalizedStatus === 'Даяр').length;
@@ -2139,7 +2125,7 @@ const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrd
         <span className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">Жалпы сумма</span>
         <span className="text-xl md:text-2xl font-black text-amber-500">{totalSum.toLocaleString()} <span className="text-sm">сом</span></span>
       </div>
-    </div>
+    </div>
     {/* Orders List - 2 Column Layout for CRM */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
       {combinedOrders.length === 0 ? (
