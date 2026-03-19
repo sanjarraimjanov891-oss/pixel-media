@@ -38,9 +38,7 @@ import {
   Sun,
   Moon,
   ArrowUpRight,
-  Download,
-  Search,
-  Filter
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
@@ -1981,9 +1979,6 @@ const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) 
 };
 
 const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrders, onDeleteOrder, onDeleteSchoolOrder, onDeleteAdsOrder, onDeleteDesignOrder }: { onNavigate: (page: Page) => void, orders: Order[], schoolOrders: SchoolOrder[], adsOrders: AdsOrder[], designOrders: DesignOrder[], onDeleteOrder: (id: number) => void, onDeleteSchoolOrder: (id: number) => void, onDeleteAdsOrder: (id: number) => void, onDeleteDesignOrder: (id: number) => void, key?: string }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'wedding' | 'school' | 'design' | 'ads'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'Күтүүдө' | 'Тартууда' | 'Монтажда' | 'Даяр' | 'Жокко чыккан'>('all');
 
   // Normalize statuses to match standard CRM statuses
   const normalizeStatus = (status: string) => {
@@ -2057,24 +2052,11 @@ const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrd
     if (!da) return 1;
     if (!db) return -1;
     return db.getTime() - da.getTime(); // Newest first
-  });
-
-  const filteredOrders = combinedOrders.filter(order => {
-    const matchesSearch = 
-      order.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (order.phone && order.phone.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (order.serviceType && order.serviceType.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesCategory = categoryFilter === 'all' || order.category === categoryFilter;
-    const matchesStatus = statusFilter === 'all' || order.normalizedStatus === statusFilter;
-
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
-
-  const totalOrders = filteredOrders.length;
-  const activeOrders = filteredOrders.filter(o => o.normalizedStatus !== 'Даяр' && o.normalizedStatus !== 'Жокко чыккан').length;
-  const readyOrders = filteredOrders.filter(o => o.normalizedStatus === 'Даяр').length;
-  const totalSum = filteredOrders.reduce((sum, o) => sum + parseAmount(o.totalAmount.toString()), 0);
+  });
+  const totalOrders = combinedOrders.length;
+  const activeOrders = combinedOrders.filter(o => o.normalizedStatus !== 'Даяр' && o.normalizedStatus !== 'Жокко чыккан').length;
+  const readyOrders = combinedOrders.filter(o => o.normalizedStatus === 'Даяр').length;
+  const totalSum = combinedOrders.reduce((sum, o) => sum + parseAmount(o.totalAmount.toString()), 0);
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -2157,80 +2139,16 @@ const OrdersListPage = ({ onNavigate, orders, schoolOrders, adsOrders, designOrd
         <span className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-wider">Жалпы сумма</span>
         <span className="text-xl md:text-2xl font-black text-amber-500">{totalSum.toLocaleString()} <span className="text-sm">сом</span></span>
       </div>
-    </div>
-
-    {/* Filters & Search */}
-    <div className="bg-slate-900/40 backdrop-blur-md p-4 rounded-2xl border border-white/10 mb-6 flex flex-col gap-4">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-        <input 
-          type="text" 
-          placeholder="Кардардын аты, телефон же кызмат боюнча издөө..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-slate-800/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-[#08c4e5] transition-colors"
-        />
-      </div>
-      
-      <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-500 font-bold uppercase tracking-wider mr-2 flex items-center gap-1"><Filter size={12}/> Категория:</span>
-          {[
-            { id: 'all', label: 'Баары' },
-            { id: 'wedding', label: 'Той' },
-            { id: 'school', label: 'Мектеп' },
-            { id: 'design', label: 'Дизайн' },
-            { id: 'ads', label: 'Жарнама' }
-          ].map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setCategoryFilter(cat.id as any)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border ${
-                categoryFilter === cat.id 
-                  ? 'bg-[#08c4e5]/20 text-[#08c4e5] border-[#08c4e5]/30' 
-                  : 'bg-transparent text-slate-400 border-white/5 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-500 font-bold uppercase tracking-wider mr-2 flex items-center gap-1"><Filter size={12}/> Статус:</span>
-          {[
-            { id: 'all', label: 'Баары' },
-            { id: 'Күтүүдө', label: 'Күтүүдө' },
-            { id: 'Тартууда', label: 'Тартууда' },
-            { id: 'Монтажда', label: 'Монтажда' },
-            { id: 'Даяр', label: 'Даяр' },
-            { id: 'Жокко чыккан', label: 'Жокко чыккан' }
-          ].map(stat => (
-            <button
-              key={stat.id}
-              onClick={() => setStatusFilter(stat.id as any)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border ${
-                statusFilter === stat.id 
-                  ? 'bg-white/10 text-white border-white/20' 
-                  : 'bg-transparent text-slate-400 border-white/5 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              {stat.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-
+    </div>
     {/* Orders List - 2 Column Layout for CRM */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-      {filteredOrders.length === 0 ? (
+      {combinedOrders.length === 0 ? (
         <div className="col-span-1 md:col-span-2 py-12 md:py-20 text-center bg-slate-900/40 backdrop-blur-md rounded-3xl border border-dashed border-white/10">
           <FileText size={32} className="mx-auto text-slate-500 mb-2 md:mb-4 md:w-12 md:h-12" />
           <p className="text-sm md:text-base text-slate-400 font-medium">Талаптарга жооп берген заказ табылган жок</p>
         </div>
       ) : (
-        filteredOrders.map(order => (
+        combinedOrders.map(order => (
           <motion.div 
             key={`${order.category}-${order.id}`}
             whileHover={{ y: -4 }}
@@ -3138,3 +3056,4 @@ export default function App() {
     </div>
   );
 }
+
