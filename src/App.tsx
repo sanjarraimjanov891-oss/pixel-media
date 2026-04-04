@@ -789,7 +789,7 @@ const SchoolListPage = ({ onNavigate, schoolOrders, onDeleteOrder }: { onNavigat
   </motion.div>
 );
 
-const AddSchoolOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<SchoolOrder, 'id'>) => void, key?: string }) => {
+const AddSchoolOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<SchoolOrder, 'id'>) => Promise<void>, key?: string }) => {
   const [formData, setFormData] = useState({
     schoolName: '',
     className: '',
@@ -799,11 +799,19 @@ const AddSchoolOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
     date: new Date().toISOString().split('T')[0],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAddOrder({
+    await onAddOrder({
       ...formData,
       status: 'Күтүүдө'
+    });
+    setFormData({
+      schoolName: '',
+      className: '',
+      vignetteType: '',
+      price: '',
+      monitorPhone: '',
+      date: new Date().toISOString().split('T')[0],
     });
     onNavigate('school_list');
   };
@@ -1376,7 +1384,7 @@ const ProjectDetailsPage = ({ onNavigate, order, previousPage = 'dashboard' }: {
   );
 };
 
-const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<Order, 'id'>) => void, key?: string }) => {
+const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<Order, 'id'>) => Promise<void>, key?: string }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     date: '',
@@ -1387,12 +1395,21 @@ const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => 
     operator: 'Санжар',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAddOrder({
+    await onAddOrder({
       ...formData,
       status: 'Күтүүдө',
       type: 'Стандарт'
+    });
+    setFormData({
+      customerName: '',
+      date: '',
+      details: '',
+      phone: '',
+      address: '',
+      deposit: '',
+      operator: 'Санжар',
     });
     onNavigate('orders_list');
   };
@@ -1620,7 +1637,7 @@ const DesignListPage = ({ onNavigate, designOrders, onDeleteOrder }: { onNavigat
   </motion.div>
 );
 
-const AddDesignOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<DesignOrder, 'id'>) => void, key?: string }) => {
+const AddDesignOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<DesignOrder, 'id'>) => Promise<void>, key?: string }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     designType: '',
@@ -1639,12 +1656,20 @@ const AddDesignOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAddOrder({
+    await onAddOrder({
       ...formData,
       date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
       status: 'Күтүүдө'
+    });
+    setFormData({
+      customerName: '',
+      designType: '',
+      size: '',
+      complexity: 'Оңой (Стандарт)',
+      price: '300',
+      notes: '',
     });
     onNavigate('design_list');
   };
@@ -1847,7 +1872,7 @@ const AdsListPage = ({ onNavigate, adsOrders, onDeleteOrder }: { onNavigate: (pa
   </motion.div>
 );
 
-const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<AdsOrder, 'id'>) => void, key?: string }) => {
+const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => void, onAddOrder: (order: Omit<AdsOrder, 'id'>) => Promise<void>, key?: string }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     businessType: 'Магазин',
@@ -1856,11 +1881,18 @@ const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) 
     phone: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAddOrder({
+    await onAddOrder({
       ...formData,
       status: 'Күтүүдө'
+    });
+    setFormData({
+      customerName: '',
+      businessType: 'Магазин',
+      price: '',
+      date: '',
+      phone: '',
     });
     onNavigate('ads_list');
   };
@@ -2765,7 +2797,7 @@ export default function App() {
     }
   }, [isLightMode]);
 
-  const handleAddOrder = async (newOrder: Omit<Order, 'id'>) => {
+  const handleAddOrder = async (newOrder: Omit<Order, 'id'>): Promise<void> => {
     if (dbConnected) {
       try {
         const res = await fetch('/api/orders', {
@@ -2787,7 +2819,7 @@ export default function App() {
     setOrders(prev => [orderWithId, ...prev]);
   };
 
-  const handleAddSchoolOrder = async (newOrder: Omit<SchoolOrder, 'id'>) => {
+  const handleAddSchoolOrder = async (newOrder: Omit<SchoolOrder, 'id'>): Promise<void> => {
     if (dbConnected) {
       try {
         const res = await fetch('/api/school-orders', {
@@ -2808,7 +2840,7 @@ export default function App() {
     setSchoolOrders(prev => [orderWithId, ...prev]);
   };
 
-  const handleAddAdsOrder = async (newOrder: Omit<AdsOrder, 'id'>) => {
+  const handleAddAdsOrder = async (newOrder: Omit<AdsOrder, 'id'>): Promise<void> => {
     if (dbConnected) {
       try {
         const res = await fetch('/api/ads-orders', {
@@ -2829,7 +2861,7 @@ export default function App() {
     setAdsOrders(prev => [orderWithId, ...prev]);
   };
 
-  const handleAddDesignOrder = async (newOrder: Omit<DesignOrder, 'id'>) => {
+  const handleAddDesignOrder = async (newOrder: Omit<DesignOrder, 'id'>): Promise<void> => {
     if (dbConnected) {
       try {
         const res = await fetch('/api/design-orders', {
