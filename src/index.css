@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    background-color: #020617;
+    transition: filter 0.5s ease, background-color 0.5s ease;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
+  }
+
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+  
+  img, video, iframe {
+    transition: filter 0.5s ease;
+  }
+  
+  .light-mode {
+    filter: invert(1) hue-rotate(180deg);
+    background-color: #020617; /* Ensure the base background is dark before inversion */
+  }
+  
+  .light-mode img,
+  .light-mode video,
+  .light-mode iframe {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+@layer components {
+  .rotating-border-container {
+    @apply relative overflow-hidden p-[2px] rounded-2xl;
+  }
+
+  .rotating-border-container::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      transparent 25%,
+      #08c4e5 50%,
+      transparent 75%,
+      transparent 100%
+    );
+    animation: rotate 4s linear infinite;
+  }
+
+  .rotating-border-red {
+    @apply relative overflow-hidden p-[2px];
+  }
+
+  .rotating-border-red::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 40deg,
+      #ff0000 45deg,
+      #ff0000 55deg,
+      transparent 60deg,
+      transparent 360deg
+    );
+    animation: rotate 2s linear infinite;
+  }
+
+  .rotating-border-container-white {
+    @apply relative overflow-hidden p-[2px] rounded-[1.25rem] md:rounded-[2rem];
+  }
+
+  .rotating-border-container-white::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      transparent 25%,
+      #ffffff 50%,
+      transparent 75%,
+      transparent 100%
+    );
+    animation: rotate 4s linear infinite;
+  }
+
+  .rotating-border-content {
+    @apply relative z-10 w-full h-full rounded-[calc(1rem-2px)];
+  }
+
+  .rotating-border-content-white {
+    @apply relative z-10 w-full h-full rounded-[calc(1.25rem-2px)] md:rounded-[calc(2rem-2px)];
+  }
+
+  @keyframes rotate {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+}
