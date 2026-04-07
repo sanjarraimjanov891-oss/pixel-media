@@ -633,10 +633,9 @@ const Dashboard = ({ onNavigate, orders, schoolOrders, adsOrders, designOrders, 
                     onClick={() => {
                       if (latestOrder) {
                         onSelectOrder(latestOrder.id);
-                      } else {
-                        onSelectOrder(-1);
                       }
                     }}
+                    disabled={!latestOrder}
                     className="flex-1 lg:flex-none px-2 py-2 md:px-8 md:py-4 bg-[#08c4e5] hover:bg-[#07b3d1] text-white font-black rounded-lg md:rounded-2xl transition-all shadow-xl shadow-cyan-500/30 text-[6px] md:text-[10px] uppercase tracking-widest flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
                   >
                     <Play size={10} fill="currentColor" className="md:w-4 md:h-4" />
@@ -798,9 +797,11 @@ const AddSchoolOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
     monitorPhone: '',
     date: new Date().toISOString().split('T')[0],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     await onAddOrder({
       ...formData,
       status: 'Күтүүдө'
@@ -911,13 +912,14 @@ const AddSchoolOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
           </div>
         </div>
 
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full py-4 md:py-5 bg-[#08c4e5] text-white font-black rounded-2xl shadow-lg shadow-cyan-200/50 uppercase tracking-widest text-[10px] md:text-xs transition-all"
+          disabled={isSubmitting}
+          className="w-full py-4 md:py-5 bg-[#08c4e5] text-white font-black rounded-2xl shadow-lg shadow-cyan-200/50 uppercase tracking-widest text-[10px] md:text-xs transition-all disabled:opacity-60"
         >
-          Заказды сактоо
+          {isSubmitting ? 'Сакталууда...' : 'Заказды сактоо'}
         </motion.button>
       </form>
     </motion.div>
@@ -1394,9 +1396,11 @@ const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => 
     deposit: '',
     operator: 'Санжар',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     await onAddOrder({
       ...formData,
       status: 'Күтүүдө',
@@ -1411,7 +1415,7 @@ const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => 
       deposit: '',
       operator: 'Санжар',
     });
-    onNavigate('orders_list');
+    onNavigate('wedding');
   };
 
   return (
@@ -1527,13 +1531,14 @@ const AddOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) => 
           </select>
         </div>
 
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full py-4 md:py-5 bg-[#08c4e5] text-white font-black rounded-2xl shadow-lg shadow-cyan-200/50 uppercase tracking-widest text-[10px] md:text-xs transition-all"
+          disabled={isSubmitting}
+          className="w-full py-4 md:py-5 bg-[#08c4e5] text-white font-black rounded-2xl shadow-lg shadow-cyan-200/50 uppercase tracking-widest text-[10px] md:text-xs transition-all disabled:opacity-60"
         >
-          Заказды сактоо
+          {isSubmitting ? 'Сакталууда...' : 'Заказды сактоо'}
         </motion.button>
       </form>
     </motion.div>
@@ -1656,8 +1661,11 @@ const AddDesignOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
     }));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     await onAddOrder({
       ...formData,
       date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
@@ -1770,14 +1778,14 @@ const AddDesignOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Pag
 
         </div>
 
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full py-4 bg-[#08c4e5] text-white font-bold rounded-xl shadow-lg shadow-cyan-200/50 flex items-center justify-center gap-2"
+          disabled={isSubmitting}
+          className="w-full py-4 bg-[#08c4e5] text-white font-bold rounded-xl shadow-lg shadow-cyan-200/50 flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          <Plus size={20} />
-          Заказды сактоо
+          {isSubmitting ? 'Сакталууда...' : <><Plus size={20} /> Заказды сактоо</>}
         </motion.button>
       </form>
     </motion.div>
@@ -1881,8 +1889,11 @@ const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) 
     phone: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     await onAddOrder({
       ...formData,
       status: 'Күтүүдө'
@@ -1982,14 +1993,14 @@ const AddAdsOrderPage = ({ onNavigate, onAddOrder }: { onNavigate: (page: Page) 
 
         </div>
 
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full py-4 bg-[#08c4e5] text-white font-bold rounded-xl shadow-lg shadow-cyan-200/50 flex items-center justify-center gap-2"
+          disabled={isSubmitting}
+          className="w-full py-4 bg-[#08c4e5] text-white font-bold rounded-xl shadow-lg shadow-cyan-200/50 flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          <Plus size={20} />
-          Заказды сактоо
+          {isSubmitting ? 'Сакталууда...' : <><Plus size={20} /> Заказды сактоо</>}
         </motion.button>
       </form>
     </motion.div>
@@ -3001,53 +3012,68 @@ export default function App() {
           <span className="font-bold">Маалымат базасы туташкан жок!</span> PostgreSQL (Railway) базасын кошуу үчүн <code>DATABASE_URL</code> чөйрө өзгөрмөсүн (environment variable) орнотуңуз. Учурда маалыматтар убактылуу гана сакталат.
         </div>
       )}
-      {currentPage === 'dashboard' ? (
-        <Dashboard key="dashboard-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} adsOrders={activeAdsOrders} designOrders={activeDesignOrders} onSelectOrder={(id) => { setSelectedOrderId(id); setPreviousPage('dashboard'); setCurrentPage('project_details'); }} isLightMode={isLightMode} setIsLightMode={setIsLightMode} />
-      ) : currentPage === 'wedding' ? (
-        <WeddingPage key="wedding-page" onNavigate={setCurrentPage} orders={activeOrders} onSelectOrder={(id) => { setSelectedOrderId(id); setPreviousPage('wedding'); setCurrentPage('project_details'); }} onUpdateOrderStatus={handleUpdateOrderStatus} />
-      ) : currentPage === 'school_list' ? (
-        <SchoolListPage key="school-list-page" onNavigate={setCurrentPage} schoolOrders={activeSchoolOrders} onDeleteOrder={handleDeleteSchoolOrder} />
-      ) : currentPage === 'reports' ? (
-        <ReportsPage key="reports-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} adsOrders={activeAdsOrders} designOrders={activeDesignOrders} />
-      ) : currentPage === 'calendar' ? (
-        <CalendarPage key="calendar-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} />
-      ) : currentPage === 'add_school_order' ? (
-        <AddSchoolOrderPage key="add-school-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddSchoolOrder} />
-      ) : currentPage === 'add_order' ? (
-        <AddOrderPage key="add-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddOrder} />
-      ) : currentPage === 'design_list' ? (
-        <DesignListPage key="design-list-page" onNavigate={setCurrentPage} designOrders={activeDesignOrders} onDeleteOrder={handleDeleteDesignOrder} />
-      ) : currentPage === 'add_design_order' ? (
-        <AddDesignOrderPage key="add-design-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddDesignOrder} />
-      ) : currentPage === 'ads_list' ? (
-        <AdsListPage key="ads-list-page" onNavigate={setCurrentPage} adsOrders={activeAdsOrders} onDeleteOrder={handleDeleteAdsOrder} />
-      ) : currentPage === 'add_ads_order' ? (
-        <AddAdsOrderPage key="add-ads-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddAdsOrder} />
-      ) : currentPage === 'orders_list' ? (
-        <OrdersListPage 
-          key="orders-list-page" 
-          onNavigate={setCurrentPage} 
-          orders={activeOrders} 
-          schoolOrders={activeSchoolOrders}
-          adsOrders={activeAdsOrders}
-          designOrders={activeDesignOrders}
-          onDeleteOrder={handleDeleteOrder} 
-          onDeleteSchoolOrder={handleDeleteSchoolOrder}
-          onDeleteAdsOrder={handleDeleteAdsOrder}
-          onDeleteDesignOrder={handleDeleteDesignOrder}
-        />
-      ) : currentPage === 'trash' ? (
-        <TrashPage 
-          key="trash-page" 
-          onNavigate={setCurrentPage} 
-          deletedOrders={deletedOrders} 
-          deletedSchoolOrders={deletedSchoolOrders}
-          onRestoreOrder={handleRestoreOrder}
-          onRestoreSchoolOrder={handleRestoreSchoolOrder}
-        />
-      ) : (
-        <ProjectDetailsPage key="project-details-page" onNavigate={setCurrentPage} previousPage={previousPage} order={orders.find(o => o.id === selectedOrderId) || schoolOrders.find(o => o.id === selectedOrderId) || adsOrders.find(o => o.id === selectedOrderId) || designOrders.find(o => o.id === selectedOrderId) || null} />
-      )}
+      <AnimatePresence mode="wait">
+        {currentPage === 'dashboard' && (
+          <Dashboard key="dashboard-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} adsOrders={activeAdsOrders} designOrders={activeDesignOrders} onSelectOrder={(id) => { setSelectedOrderId(id); setPreviousPage('dashboard'); setCurrentPage('project_details'); }} isLightMode={isLightMode} setIsLightMode={setIsLightMode} />
+        )}
+        {currentPage === 'wedding' && (
+          <WeddingPage key="wedding-page" onNavigate={setCurrentPage} orders={activeOrders} onSelectOrder={(id) => { setSelectedOrderId(id); setPreviousPage('wedding'); setCurrentPage('project_details'); }} onUpdateOrderStatus={handleUpdateOrderStatus} />
+        )}
+        {currentPage === 'school_list' && (
+          <SchoolListPage key="school-list-page" onNavigate={setCurrentPage} schoolOrders={activeSchoolOrders} onDeleteOrder={handleDeleteSchoolOrder} />
+        )}
+        {currentPage === 'reports' && (
+          <ReportsPage key="reports-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} adsOrders={activeAdsOrders} designOrders={activeDesignOrders} />
+        )}
+        {currentPage === 'calendar' && (
+          <CalendarPage key="calendar-page" onNavigate={setCurrentPage} orders={activeOrders} schoolOrders={activeSchoolOrders} />
+        )}
+        {currentPage === 'add_school_order' && (
+          <AddSchoolOrderPage key="add-school-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddSchoolOrder} />
+        )}
+        {currentPage === 'add_order' && (
+          <AddOrderPage key="add-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddOrder} />
+        )}
+        {currentPage === 'design_list' && (
+          <DesignListPage key="design-list-page" onNavigate={setCurrentPage} designOrders={activeDesignOrders} onDeleteOrder={handleDeleteDesignOrder} />
+        )}
+        {currentPage === 'add_design_order' && (
+          <AddDesignOrderPage key="add-design-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddDesignOrder} />
+        )}
+        {currentPage === 'ads_list' && (
+          <AdsListPage key="ads-list-page" onNavigate={setCurrentPage} adsOrders={activeAdsOrders} onDeleteOrder={handleDeleteAdsOrder} />
+        )}
+        {currentPage === 'add_ads_order' && (
+          <AddAdsOrderPage key="add-ads-order-page" onNavigate={setCurrentPage} onAddOrder={handleAddAdsOrder} />
+        )}
+        {currentPage === 'orders_list' && (
+          <OrdersListPage
+            key="orders-list-page"
+            onNavigate={setCurrentPage}
+            orders={activeOrders}
+            schoolOrders={activeSchoolOrders}
+            adsOrders={activeAdsOrders}
+            designOrders={activeDesignOrders}
+            onDeleteOrder={handleDeleteOrder}
+            onDeleteSchoolOrder={handleDeleteSchoolOrder}
+            onDeleteAdsOrder={handleDeleteAdsOrder}
+            onDeleteDesignOrder={handleDeleteDesignOrder}
+          />
+        )}
+        {currentPage === 'trash' && (
+          <TrashPage
+            key="trash-page"
+            onNavigate={setCurrentPage}
+            deletedOrders={deletedOrders}
+            deletedSchoolOrders={deletedSchoolOrders}
+            onRestoreOrder={handleRestoreOrder}
+            onRestoreSchoolOrder={handleRestoreSchoolOrder}
+          />
+        )}
+        {currentPage === 'project_details' && (
+          <ProjectDetailsPage key="project-details-page" onNavigate={setCurrentPage} previousPage={previousPage} order={orders.find(o => o.id === selectedOrderId) || schoolOrders.find(o => o.id === selectedOrderId) || adsOrders.find(o => o.id === selectedOrderId) || designOrders.find(o => o.id === selectedOrderId) || null} />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isAIChatOpen && (
